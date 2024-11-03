@@ -17,12 +17,22 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        AuthListener.isLoggedInListener(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => getIt<AuthCubit>()..checkIsLoggedIn(),
+        ),
       ],
-      child: MaterialApp.router(
-        routerConfig: appRouter.config(),
+      child: MultiBlocListener(
+        listeners: [
+          // Used for checking if user already logged in or not
+          AuthListener.isLoggedInListener(),
+          // Used when user login / register
+          AuthListener.saveTokenListener(),
+        ],
+        child: MaterialApp.router(
+          routerConfig: appRouter.config(),
+        ),
       ),
     );
   }
